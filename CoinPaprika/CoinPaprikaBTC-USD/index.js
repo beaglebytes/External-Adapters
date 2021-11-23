@@ -23,7 +23,7 @@ const createRequest = (input, callback) => {
   // The Validator helps you validate the Chainlink request data
   const validator = new Validator(callback, input, customParams)
   const jobRunID = validator.validated.id
-  const base_currency_id = validator.validated.data.base_currency_id || 'eth-ethereum'
+  const base_currency_id = validator.validated.data.base_currency_id || 'btc-bitcoin'
   const quote_currency_id = validator.validated.data.quote_currency_id || 'usd-us-dollars'
   const amount = validator.validated.data.amount
   const endpoint = validator.validated.data.endpoint || 'price-converter'
