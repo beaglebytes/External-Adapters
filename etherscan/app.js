@@ -17,4 +17,4 @@ app.post('/', (req, res) => {
 })
 app.listen(port, () => console.log(`Listening on port ${port}!`))
 
-// curl -X POST -H "content-type:application/json" "http://localhost:8080/" --data '{ "id": 0, "data": { "apikey": "VM22B4RRT44J4ZDAFU8BAS7ZJMBI87SKMT"} }'
+// curl -X POST -H "content-type:application/json" "http://localhost:8080/" --data '{ "id": 0, "data": { "apikey": "{ENTER_API_KEY}"} }'
