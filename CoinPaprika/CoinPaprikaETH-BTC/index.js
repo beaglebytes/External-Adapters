@@ -24,7 +24,7 @@ const createRequest = (input, callback) => {
   const validator = new Validator(callback, input, customParams)
   const jobRunID = validator.validated.id
   const base_currency_id = validator.validated.data.base_currency_id || 'eth-ethereum'
-  const quote_currency_id = validator.validated.data.quote_currency_id || 'usd-us-dollars'
+  const quote_currency_id = validator.validated.data.quote_currency_id || 'btc-bitcoin'
   const amount = validator.validated.data.amount
   const endpoint = validator.validated.data.endpoint || 'price-converter'
   const url = `https://api.coinpaprika.com/v1/${endpoint}`
