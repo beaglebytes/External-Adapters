@@ -13,27 +13,27 @@ const customError = (data) => {
 // with a Boolean value indicating whether or not they
 // should be required.
 const customParams = {
-  base_currency_id: false,
-  quote_currency_id: false,
-  amount: ['amount'],
-  endpoint: false,
+  from_currency: false,
+  to_currency: false,
+  apikey: ['apikey'],
+  endpoint: false
 }
 
 const createRequest = (input, callback) => {
   // The Validator helps you validate the Chainlink request data
   const validator = new Validator(callback, input, customParams)
   const jobRunID = validator.validated.id
-  const base_currency_id = validator.validated.data.base_currency_id || 'LINK-chainlink'
-  const quote_currency_id = validator.validated.data.quote_currency_id || 'usd-us-dollars'
-  const amount = validator.validated.data.amount
-  const endpoint = validator.validated.data.endpoint || 'price-converter'
-  const url = `https://api.coinpaprika.com/v1/${endpoint}`
+  const from_currency = validator.validated.data.from_currency
+  const to_currency = validator.validated.data.to_currency
+  const endpoint = validator.validated.data.endpoint || 'query'
+  const apikey = validator.validated.data.apikey
+  const url = `https://www.alphavantage.co/${endpoint}?function=CURRENCY_EXCHANGE_RATE`
+  
 
   const params = {
-    base_currency_id,
-    quote_currency_id,
-    amount
-    
+    from_currency,
+    to_currency,
+    apikey
   }
 
   const config = {
@@ -50,8 +50,7 @@ const createRequest = (input, callback) => {
       // It's common practice to store the desired value at the top-level
       // result key. This allows different adapters to be compatible with
       // one another.
-      
-      response.data.result = Requester.getResult(response.data, ["price"])      
+      response.data.result = Requester.getResult(response.data, ["Realtime Currency Exchange Rate", "5. Exchange Rate"])        
       callback(response.status, Requester.success(jobRunID, response))
     })
     .catch(error => {
