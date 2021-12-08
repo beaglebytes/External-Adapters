@@ -1,5 +1,5 @@
 const { Requester, Validator } = require('@chainlink/external-adapter')
-
+require('dotenv').config()
 
 // Define custom error scenarios for the API.
 // Return true for the adapter to retry.
@@ -13,9 +13,8 @@ const customError = (data) => {
 // with a Boolean value indicating whether or not they
 // should be required.
 const customParams = {
-  from_currency: false,
-  to_currency: false,
-  apikey: ['apikey'],
+  from_currency: ['from_currency'],
+  to_currency: ['to_currency'],
   endpoint: false
 }
 
@@ -23,17 +22,19 @@ const createRequest = (input, callback) => {
   // The Validator helps you validate the Chainlink request data
   const validator = new Validator(callback, input, customParams)
   const jobRunID = validator.validated.id
-  const from_currency = validator.validated.data.from_currency
-  const to_currency = validator.validated.data.to_currency
+
   const endpoint = validator.validated.data.endpoint || 'query'
-  const apikey = validator.validated.data.apikey
-  const url = `https://www.alphavantage.co/${endpoint}?function=CURRENCY_EXCHANGE_RATE`
+  const apikey = process.env.API_KEY
+
+  const fc = validator.validated.data.from_currency
+  const tc = validator.validated.data.to_currency
+
+  const url = `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=${fc}&to_currency=${tc}&apikey=${apikey}`
   
 
   const params = {
-    from_currency,
-    to_currency,
-    apikey
+    fc,
+    tc,
   }
 
   const config = {
@@ -41,7 +42,6 @@ const createRequest = (input, callback) => {
     params
   }
 
-  console.log(config)
 
   // The Requester allows API calls be retry in case of timeout
   // or connection failure
@@ -50,7 +50,7 @@ const createRequest = (input, callback) => {
       // It's common practice to store the desired value at the top-level
       // result key. This allows different adapters to be compatible with
       // one another.
-      response.data.result = Requester.getResult(response.data, ["Realtime Currency Exchange Rate", "5. Exchange Rate"])        
+      //response.data.result = Requester.validateResultNumber(response.data, ["Realtime Currency Exchange Rate", "5. Exchange Rate"])        
       callback(response.status, Requester.success(jobRunID, response))
     })
     .catch(error => {
